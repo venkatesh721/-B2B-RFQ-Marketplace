@@ -1,0 +1,21 @@
+# Environment and dependency files
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+node_modules/
+dist/
+
+# Django local files
+*.sqlite3
+staticfiles/
+media/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
