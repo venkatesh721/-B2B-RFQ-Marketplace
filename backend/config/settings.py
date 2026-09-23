@@ -63,6 +63,13 @@ ASGI_APPLICATION = "config.asgi.application"
 database_url = env("DATABASE_URL", default=None)
 if database_url:
     DATABASES = {"default": env.db_url("DATABASE_URL")}
+elif DEBUG and not env("MYSQL_HOST", default=None) and not env("MYSQL_DATABASE", default=None):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 else:
     DATABASES = {
         "default": {
