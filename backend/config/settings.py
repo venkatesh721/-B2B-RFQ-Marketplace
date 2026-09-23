@@ -103,6 +103,7 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
     "https://rfqmarketplace-cyan.vercel.app",
 ]
 
