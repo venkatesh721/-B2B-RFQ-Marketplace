@@ -60,16 +60,20 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME":"b_marketplace",
-        "USER": "root",
-        "PASSWORD":'PassMysql@1',
-        "HOST": "localhost",
-        "PORT": "3306",
+database_url = env("DATABASE_URL", default=None)
+if database_url:
+    DATABASES = {"default": env.db_url("DATABASE_URL")}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": env("MYSQL_ENGINE", default="django.db.backends.mysql"),
+            "NAME": env("MYSQL_DATABASE", default="b_marketplace"),
+            "USER": env("MYSQL_USER", default="root"),
+            "PASSWORD": env("MYSQL_PASSWORD", default=""),
+            "HOST": env("MYSQL_HOST", default="localhost"),
+            "PORT": env("MYSQL_PORT", default="3306"),
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
