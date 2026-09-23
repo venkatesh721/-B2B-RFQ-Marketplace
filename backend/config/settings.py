@@ -15,7 +15,12 @@ if not SECRET_KEY:
         SECRET_KEY = "development-only-secret-key"
     else:
         raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is False.")
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "testserver"])
+ALLOWED_HOSTS = sorted(set(env.list("DJANGO_ALLOWED_HOSTS", default=[]) + [
+    "localhost",
+    "127.0.0.1",
+    "testserver",
+    "b2b-rfq-marketplace-hphn.onrender.com",
+]))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -90,7 +95,10 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173"])
+CORS_ALLOWED_ORIGINS = sorted(set(env.list("CORS_ALLOWED_ORIGINS", default=[]) + [
+    "http://localhost:5173",
+    "https://bidmarket4545.vercel.app",
+]))
 
 # Production must be served over HTTPS. Each setting can be overridden for a
 # trusted reverse proxy that terminates TLS before forwarding to Django.
@@ -102,8 +110,8 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
     SECURE_CONTENT_TYPE_NOSNIFF = True
     
-CORS_ALLOWED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = sorted(set(env.list("CSRF_TRUSTED_ORIGINS", default=[]) + [
     "http://localhost:5173",
     "https://bidmarket4545.vercel.app",
-]
+]))
 
