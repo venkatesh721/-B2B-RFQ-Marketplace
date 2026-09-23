@@ -9,25 +9,8 @@ export function SubmitQuotationPage() {
   const { id } = useParams(); const navigate = useNavigate(); const [rfq, setRfq] = useState(null)
   const [form, setForm] = useState({ quoted_price: '', estimated_delivery_time: '', message: '' }); const [error, setError] = useState(''); const [success, setSuccess] = useState(''); const [loading, setLoading] = useState(true); const [submitting, setSubmitting] = useState(false)
   useEffect(() => { apiClient.get(`/rfqs/${id}/`).then(({ data }) => setRfq(data)).catch(err => setError(apiError(err))).finally(() => setLoading(false)) }, [id])
-  async function submit(event) {
-    event.preventDefault()
-    if (submitting) return
-    const rfqId = Number(id)
-    if (!Number.isInteger(rfqId) || rfqId <= 0) { setError('This RFQ could not be identified. Please return to the RFQ and try again.'); return }
-
-    setError(''); setSuccess(''); setSubmitting(true)
-    const payload = { rfq: rfqId, ...form }
-    try {
-      const response = await apiClient.post('/quotations/', payload)
-      if (import.meta.env.DEV) console.debug('Quotation submission succeeded', { url: '/quotations/', status: response.status, data: response.data })
-      if (response.status !== 201) throw new Error(`Unexpected quotation response status: ${response.status}`)
-      setSuccess('Quotation submitted successfully.')
-      setTimeout(() => navigate('/supplier/quotations'), 650)
-    } catch (err) {
-      if (import.meta.env.DEV) console.error('Quotation submission failed', { url: '/quotations/', status: err.response?.status, data: err.response?.data })
-      setError(apiError(err))
-      setSubmitting(false)
-    }
+  async function submit(event) { event.preventDefault(); setError(''); setSuccess(''); setSubmitting(true)
+    try { await apiClient.post('/quotations/', { rfq: Number(id), ...form }); setSuccess('Quotation submitted successfully.'); setTimeout(() => navigate('/supplier/quotations'), 650) } catch (err) { setError(apiError(err)) } finally { setSubmitting(false) }
   }
   if (loading) return <Loading />
   return <main className="form-page"><h1>Submit quotation</h1>{rfq && <p>For: <strong>{rfq.product_or_service_name}</strong></p>}<form className="form-card" onSubmit={submit}><ErrorMessage error={error} /><SuccessMessage message={success} />
