@@ -1,8 +1,11 @@
 import axios from 'axios'
 
+const defaultApiUrl = import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://b2b-rfq-marketplace-hphn.onrender.com'
 const configuredApiUrl = import.meta.env.VITE_API_URL?.trim()
-if (!configuredApiUrl) throw new Error('VITE_API_URL must be configured before starting the frontend.')
-const apiUrl = configuredApiUrl.replace(/\/$/, '')
+const isLocalApiUrl = configuredApiUrl && /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?\/?$/i.test(configuredApiUrl)
+const apiUrl = ((import.meta.env.DEV || !isLocalApiUrl) ? configuredApiUrl : '') || defaultApiUrl
 
 const apiClient = axios.create({
   baseURL: `${apiUrl}/api`,
