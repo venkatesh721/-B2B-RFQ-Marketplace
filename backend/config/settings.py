@@ -104,6 +104,6 @@ if not DEBUG:
     
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://rfqmarketplace-cyan.vercel.app",
+    "https://bidmarket4545.vercel.app",
 ]
 
