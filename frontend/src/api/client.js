@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim()
+if (!configuredApiUrl) throw new Error('VITE_API_URL must be configured before starting the frontend.')
+const apiUrl = configuredApiUrl.replace(/\/$/, '')
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: `${apiUrl}/api`,
 })
 
 apiClient.interceptors.request.use((config) => {
