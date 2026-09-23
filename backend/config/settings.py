@@ -60,32 +60,12 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-database_url = env("DATABASE_URL", default=None)
-database_host = env("MYSQL_HOST", default=env("DB_HOST", default=None))
-database_name = env("MYSQL_DATABASE", default=env("DB_NAME", default=None))
-database_user = env("MYSQL_USER", default=env("DB_USER", default=None))
-database_password = env("MYSQL_PASSWORD", default=env("DB_PASSWORD", default=None))
-database_port = env("MYSQL_PORT", default=env("DB_PORT", default="3306"))
-if database_url:
-    DATABASES = {"default": env.db_url("DATABASE_URL")}
-elif DEBUG and not database_host and not database_name:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": env("MYSQL_ENGINE", default="django.db.backends.mysql"),
-            "NAME": database_name or "b_marketplace",
-            "USER": database_user or "root",
-            "PASSWORD": database_password or "",
-            "HOST": database_host or "localhost",
-            "PORT": database_port,
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

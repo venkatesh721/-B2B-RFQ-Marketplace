@@ -17,7 +17,7 @@ These accounts are for evaluation and demonstration purposes only and should not
 | Meera Nair | supplier.demo.meera@marketplace.in | Supplier | DemoPass@2026 |
 | Arjun Patel | supplier.demo.arjun@marketplace.in | Supplier | DemoPass@2026 |
 | Rahul Kulkarni | supplier.demo.rahul@marketplace.in | Supplier | DemoPass@2026 |
-| Sonali Desai | supplier.demo.sonali@marketplace.in | Supplier |   DemoPass@2026 |
+| Sonali Desai | supplier.demo.sonali@marketplace.in | Supplier |  DemoPass@2026 |
 
 ## Example Workflow Tests
 
