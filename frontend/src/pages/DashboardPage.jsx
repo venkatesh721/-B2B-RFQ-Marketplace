@@ -25,8 +25,10 @@ export default function DashboardPage() {
       const rfqs = normalizeList(rfqData)
 
       const quoteRequests = rfqs.map(rfq => apiClient.get(`/rfqs/${rfq.id}/quotations/`))
-      const quoteResponses = await Promise.all(quoteRequests)
-      const quotations = quoteResponses.flatMap(({ data }) => normalizeList(data))
+      const quoteResponses = await Promise.allSettled(quoteRequests)
+      const quotations = quoteResponses
+        .filter(response => response.status === 'fulfilled')
+        .flatMap(({ value: { data } }) => normalizeList(data))
 
       if (live) {
         setState({
@@ -158,7 +160,7 @@ export default function DashboardPage() {
 
   const availableRfqs = state.rfqs.length
   const submittedQuotations = state.quotations.length
-  const pendingActive = Math.max(state.quotations.length, 0)
+  const totalQuotations = state.quotations.length
   const recentRfqs = [...state.rfqs].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 4)
   const recentQuotations = [...state.quotations].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 4)
 
@@ -175,7 +177,7 @@ export default function DashboardPage() {
     <section className="stat-grid">
       <StatCard icon="◌" label="Available RFQs" value={availableRfqs} tone="navy" />
       <StatCard icon="▤" label="Submitted Quotations" value={submittedQuotations} tone="blue" />
-      <StatCard icon="◍" label="Pending / Active Quotations" value={pendingActive} tone="slate" />
+      <StatCard icon="◍" label="Total Quotations" value={totalQuotations} tone="slate" />
     </section>
 
     <section className="dashboard-panels">

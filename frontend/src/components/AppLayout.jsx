@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const THEME_STORAGE_KEY = 'rfq-market-theme'
+const THEMES = ['light', 'dark']
+
 export default function AppLayout({ children }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -9,13 +12,13 @@ export default function AppLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') return 'light'
-    const savedTheme = window.localStorage.getItem('rfq-market-theme')
-    return savedTheme || 'light'
+    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
+    return THEMES.includes(savedTheme) ? savedTheme : 'light'
   })
   const closeMenu = () => setMenuOpen(false)
 
   useEffect(() => {
-    window.localStorage.setItem('rfq-market-theme', theme)
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
 
   function signOut() { logout(); navigate('/login') }
@@ -30,7 +33,7 @@ export default function AppLayout({ children }) {
     { to: '/supplier/quotations', label: 'My Quotations' },
   ]
 
-  return <div className={`app-shell dashboard-app-shell theme-${theme}`} data-theme={theme}>
+  return <div className={`app-shell dashboard-app-shell role-${isBuyer ? 'buyer' : 'supplier'} theme-${theme}`} data-theme={theme}>
     <div
       className={`mobile-backdrop ${menuOpen ? 'visible' : ''}`}
       onClick={closeMenu}
@@ -89,11 +92,18 @@ export default function AppLayout({ children }) {
           </button>
           <button
             type="button"
-            className="theme-toggle"
-            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className={`theme-toggle ${theme === 'dark' ? 'is-dark' : ''}`}
+            role="switch"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-checked={theme === 'dark'}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
-            {theme === 'light' ? '☾ Dark' : '☀ Light'}
+            <span className="theme-toggle-track" aria-hidden="true">
+              <span className="theme-toggle-icon theme-toggle-sun">☀</span>
+              <span className="theme-toggle-icon theme-toggle-moon">☾</span>
+              <span className="theme-toggle-thumb" />
+            </span>
+            <span className="theme-toggle-label">{theme === 'dark' ? 'Dark' : 'Light'}</span>
           </button>
           <span className={isBuyer ? 'role-chip buyer-role' : 'role-chip supplier-role'}>{isBuyer ? 'BUYER' : 'SUPPLIER'}</span>
         </div>

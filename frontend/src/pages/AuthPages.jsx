@@ -38,7 +38,7 @@ export function RegisterPage() {
     catch (err) { setError(apiError(err)) } finally { setSubmitting(false) }
   }
   return <AuthCard title="Create your account" subtitle="Choose the role that matches your marketplace activity."><form onSubmit={submit}>
-    <ErrorMessage error={error} />{success && <div className="notice success">{success}</div>}
+    <ErrorMessage error={error} />{success && <div className="notice success" role="status">{success}</div>}
     <Field label="Name" value={form.name} onChange={name => setForm({ ...form, name })} required />
     <Field label="Email" type="email" value={form.email} onChange={email => setForm({ ...form, email })} required />
     <Field label="Password" type="password" value={form.password} onChange={password => setForm({ ...form, password })} minLength="8" required />

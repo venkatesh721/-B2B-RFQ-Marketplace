@@ -6,13 +6,28 @@ const ACCESS_KEY = 'rfq_access_token'
 const REFRESH_KEY = 'rfq_refresh_token'
 const USER_KEY = 'rfq_user'
 
+function readStoredUser() {
+  try {
+    const storedUser = localStorage.getItem(USER_KEY)
+    return storedUser ? JSON.parse(storedUser) : null
+  } catch {
+    localStorage.removeItem(USER_KEY)
+    return null
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem(USER_KEY) || 'null'))
+  const [user, setUser] = useState(readStoredUser)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function restoreSession() {
-      if (!localStorage.getItem(ACCESS_KEY)) return setLoading(false)
+      if (!localStorage.getItem(ACCESS_KEY)) {
+        localStorage.removeItem(USER_KEY)
+        setUser(null)
+        setLoading(false)
+        return
+      }
       try {
         const { data } = await apiClient.get('/auth/me/')
         setUser(data)
@@ -27,7 +42,10 @@ export function AuthProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    const clearSession = () => setUser(null)
+    const clearSession = () => {
+      localStorage.removeItem(USER_KEY)
+      setUser(null)
+    }
     window.addEventListener('rfq-session-expired', clearSession)
     return () => window.removeEventListener('rfq-session-expired', clearSession)
   }, [])
